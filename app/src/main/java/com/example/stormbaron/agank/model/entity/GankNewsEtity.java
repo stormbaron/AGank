@@ -7,7 +7,7 @@ import java.util.List;
  * 干货信息
  */
 
-public class GankNewsEtity {
+public class GankNewsEtity implements BaseEntity{
 
     /**
      * _id : 5941f5f3421aa92c7be61c16
