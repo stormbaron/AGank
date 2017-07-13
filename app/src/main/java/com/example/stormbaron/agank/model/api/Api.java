@@ -8,4 +8,7 @@ package com.example.stormbaron.agank.model.api;
 public interface Api {
     //基础接口
     String API_DOMAIN="http://gank.io/api/";
+
+    String API_Gank_Image_base="http://gank.io/api/search/query/listview/category/";
+
 }
