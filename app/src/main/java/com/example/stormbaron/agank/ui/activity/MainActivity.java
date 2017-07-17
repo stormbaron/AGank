@@ -1,99 +1,95 @@
 package com.example.stormbaron.agank.ui.activity;
 
-import android.content.Context;
+
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
-
 import com.example.stormbaron.agank.R;
 import com.example.stormbaron.agank.app.PermissionUtil;
-import com.example.stormbaron.agank.model.api.Api;
-import com.example.stormbaron.agank.model.api.apiservice.GankApiService;
-import com.example.stormbaron.agank.model.entity.ImageEntity;
-import com.example.stormbaron.agank.model.entity.ResultMode;
-import com.example.stormbaron.agank.ui.adapter.GridAdapterRecyclerView;
+import com.example.stormbaron.agank.ui.fragments.BaseFragment;
+import com.example.stormbaron.agank.ui.fragments.WelfareFragment;
 import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
+import com.zhihu.matisse.engine.impl.GlideEngine;
+import com.zhihu.matisse.filter.Filter;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
-import static android.support.v7.widget.StaggeredGridLayoutManager.VERTICAL;
+public class MainActivity extends AppCompatActivity implements WelfareFragment.OnFragmentInteractionListener {
+    private TabLayout mTabLayout;
+    private TabLayout.Tab mDiscoveryTab, mFuliTab, mMyTab;
+    private List<BaseFragment> fragments=new ArrayList<>();
 
-public class MainActivity extends AppCompatActivity {
-    private RecyclerView mRecyclerView;
-    Retrofit retrofit;
-    Call<ResultMode<ImageEntity>> call;
-    private Context mContext = MainActivity.this;
-
+    private FragmentManager mFragmentManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         PermissionUtil.checkPermission(MainActivity.this);
-        retrofit = new Retrofit.Builder()
-                .baseUrl(Api.API_Gank_Image_base)
-                .addConverterFactory(GsonConverterFactory.create())//添加 json 转换器
-                .build();
-        GankApiService apiService = retrofit.create(GankApiService.class);
-        call = apiService.getImageList(30, 1);
+        //PermissionUtil.requestPermission(this,1);
         initView();
-        initData();
     }
 
     private void initView() {
-        mRecyclerView = (RecyclerView) findViewById(R.id.id_main_recycle_view);
-        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, VERTICAL));
-    }
-
-    private int REQUEST_CODE_CHOOSE = 1100;
-    private ResultMode<ImageEntity> result;
-
-    public void initData() {
-        Observable.create(new Observable.OnSubscribe<ResultMode<ImageEntity>>() {
+        mTabLayout = (TabLayout) findViewById(R.id.id_main_tab_layout);
+        mDiscoveryTab = mTabLayout.newTab().setText("福利");
+        mFuliTab = mTabLayout.newTab().setText("干货");
+        mMyTab = mTabLayout.newTab().setText("我的");
+        mTabLayout.addTab(mDiscoveryTab);
+        mTabLayout.addTab(mFuliTab);
+        mTabLayout.addTab(mMyTab);
+        mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void call(Subscriber s) {
-                Log.e("TAG", call.request().url().toString());
-                try {
-                    result = call.execute().body();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                s.onNext(result);
-            }
-        }).observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Subscriber<ResultMode<ImageEntity>>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-                    @Override
-                    public void onError(Throwable e) {
-                    }
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab == mDiscoveryTab) {
 
-                    @Override
-                    public void onNext(ResultMode<ImageEntity> s) {
-                        mRecyclerView.setAdapter(new GridAdapterRecyclerView(mContext, s.results));
-                    }
-                });
+                }
+                if (tab == mFuliTab) {
+
+                }
+                if (tab == mMyTab) {
+                    Matisse.from(MainActivity.this)
+                            .choose(MimeType.allOf())
+                            .countable(true)
+                            .maxSelectable(9)
+                            //.addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
+                            .gridExpectedSize(getResources().getDimensionPixelSize(R.dimen.grid_expected_size))
+                            .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                            .thumbnailScale(0.85f)
+                            .imageEngine(new GlideEngine())
+                            .forResult(REQUEST_CODE_CHOOSE);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+        mFragmentManager=getSupportFragmentManager();
+        fragments.add(WelfareFragment.newInstance("1","2"));
+        FragmentTransaction mFragmentTransaction= mFragmentManager.beginTransaction();
+        mFragmentTransaction.add(R.id.id_main_content,fragments.get(0));
+        mFragmentTransaction.commit();
     }
 
 
     List<Uri> mSelected;
+    private int REQUEST_CODE_CHOOSE = 1100;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
