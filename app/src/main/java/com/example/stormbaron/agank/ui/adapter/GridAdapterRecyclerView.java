@@ -2,15 +2,16 @@ package com.example.stormbaron.agank.ui.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import com.bumptech.glide.Glide;
+
 import com.example.stormbaron.agank.R;
 import com.example.stormbaron.agank.model.entity.ImageEntity;
+import com.juli.library.ImageHelper.ImageShowActivity;
 import com.juli.library.ImageHelper.imageLoader.ImageLoaderManager;
+import com.juli.library.ImageHelper.imageLoader.ImageLoaderOption;
 
 import java.util.List;
 
@@ -30,15 +31,22 @@ public class GridAdapterRecyclerView extends RecyclerView.Adapter<GridAdapterRec
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.e("TAG",""+mDatas.size());
         return new ViewHolder(LayoutInflater.from(mContext).inflate(R.layout.recyclerview_item_main_grid, null));
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        Log.e("TAG",mDatas.get(position).getUrl());
-        ImageLoaderManager.getInstance().showImage(holder.mImg,mDatas.get(position).getUrl(),null);
-       //Glide.with(mContext).load(mDatas.get(position).getUrl()).placeholder(R.mipmap.ic_launcher).error(android.R.drawable.ic_delete).into(holder.mImg);
+    public void onBindViewHolder(ViewHolder holder, final int position) {
+        ImageLoaderManager.getInstance().load(mDatas.get(position).getUrl())
+                .setPlaceHolder(R.mipmap.ic_launcher)
+                .setIsCrossFade(true)
+                .setIsSkipMemoryCache(true)
+                .into(holder.mImg);
+        holder.mImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ImageShowActivity.actionStart(mContext, mDatas.get(position).getUrl());
+            }
+        });
     }
 
     @Override

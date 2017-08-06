@@ -5,4 +5,5 @@ package com.example.stormbaron.agank.prensenter;
  */
 
 public interface BasePrensenter {
+
 }

@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        sign {
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storeFile file('/home/stormbaron/work/FileKey/jl.keystore')
+            storePassword 'android'
+        }
+    }
     compileSdkVersion 24
     buildToolsVersion "25.0.3"
     defaultConfig {
@@ -17,6 +25,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.sign
+        }
+        debug{
+            signingConfig signingConfigs.sign
         }
     }
     packagingOptions {
@@ -44,6 +56,7 @@ dependencies {
     compile 'com.zhihu.android:matisse:0.4.3'
     compile 'com.android.support:support-v4:24.2.1'
     compile 'com.google.android.gms:play-services-plus:11.0.0'
+    compile project(':ImageHelperlibrary')
     testCompile 'junit:junit:4.12'
-    compile project(':library')
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
 }

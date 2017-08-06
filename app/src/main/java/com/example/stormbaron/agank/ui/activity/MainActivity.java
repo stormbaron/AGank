@@ -1,6 +1,7 @@
 package com.example.stormbaron.agank.ui.activity;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
@@ -10,33 +11,37 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Toast;
+
 import com.example.stormbaron.agank.R;
 import com.example.stormbaron.agank.app.PermissionUtil;
 import com.example.stormbaron.agank.ui.fragments.BaseFragment;
+import com.example.stormbaron.agank.ui.fragments.GankFragment;
+import com.example.stormbaron.agank.ui.fragments.OnFragmentInteractionListener;
+import com.example.stormbaron.agank.ui.fragments.UserFragment;
 import com.example.stormbaron.agank.ui.fragments.WelfareFragment;
-import com.zhihu.matisse.Matisse;
-import com.zhihu.matisse.MimeType;
-import com.zhihu.matisse.engine.impl.GlideEngine;
-import com.zhihu.matisse.filter.Filter;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements WelfareFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener {
+    private Context mContext = this;
     private TabLayout mTabLayout;
     private TabLayout.Tab mDiscoveryTab, mFuliTab, mMyTab;
-    private List<BaseFragment> fragments=new ArrayList<>();
-
+    private List<BaseFragment> fragments = new ArrayList<>();
+    private List<TabLayout.Tab> tabs = new ArrayList<>();
     private FragmentManager mFragmentManager;
+    private int currentPosition = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         PermissionUtil.checkPermission(MainActivity.this);
-        //PermissionUtil.requestPermission(this,1);
         initView();
     }
 
@@ -48,27 +53,13 @@ public class MainActivity extends AppCompatActivity implements WelfareFragment.O
         mTabLayout.addTab(mDiscoveryTab);
         mTabLayout.addTab(mFuliTab);
         mTabLayout.addTab(mMyTab);
+        tabs.add(mDiscoveryTab);
+        tabs.add(mFuliTab);
+        tabs.add(mMyTab);
         mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if (tab == mDiscoveryTab) {
-
-                }
-                if (tab == mFuliTab) {
-
-                }
-                if (tab == mMyTab) {
-                    Matisse.from(MainActivity.this)
-                            .choose(MimeType.allOf())
-                            .countable(true)
-                            .maxSelectable(9)
-                            //.addFilter(new GifSizeFilter(320, 320, 5 * Filter.K * Filter.K))
-                            .gridExpectedSize(getResources().getDimensionPixelSize(R.dimen.grid_expected_size))
-                            .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-                            .thumbnailScale(0.85f)
-                            .imageEngine(new GlideEngine())
-                            .forResult(REQUEST_CODE_CHOOSE);
-                }
+                changeFagment(tab);
             }
 
             @Override
@@ -80,29 +71,57 @@ public class MainActivity extends AppCompatActivity implements WelfareFragment.O
 
             }
         });
-        mFragmentManager=getSupportFragmentManager();
-        fragments.add(WelfareFragment.newInstance("1","2"));
-        FragmentTransaction mFragmentTransaction= mFragmentManager.beginTransaction();
-        mFragmentTransaction.add(R.id.id_main_content,fragments.get(0));
+        mFragmentManager = getSupportFragmentManager();
+        fragments.add(WelfareFragment.newInstance("1", "2"));
+        fragments.add(new GankFragment());
+        fragments.add(UserFragment.newInstance("1", "2"));
+
+        mFragmentTransaction = mFragmentManager.beginTransaction();
+        mFragmentTransaction.add(R.id.id_main_content, fragments.get(currentPosition));
+        //mFragmentTransaction.add(R.id.id_main_content, fragments.get(1));
+        //mFragmentTransaction.add(R.id.id_main_content, fragments.get(2));
+
+        //mFragmentTransaction.hide(fragments.get(0));
+       // mFragmentTransaction.hide(fragments.get(1));
+        //mFragmentTransaction.hide(fragments.get(2));
+
+        //mFragmentTransaction.show(fragments.get(currentPosition));
         mFragmentTransaction.commit();
     }
 
+    FragmentTransaction mFragmentTransaction;
 
-    List<Uri> mSelected;
-    private int REQUEST_CODE_CHOOSE = 1100;
+    public void changeFagment(TabLayout.Tab tab) {
+        int position = tabs.indexOf(tab);
+        if (currentPosition == position) {
+            return;
+        }
+        mFragmentTransaction = mFragmentManager.beginTransaction();
+        //mFragmentTransaction.hide(fragments.get(currentPosition));
+        mFragmentTransaction.replace(R.id.id_main_content,fragments.get(position));
+        currentPosition = position;
+        mFragmentTransaction.commit();
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
-            mSelected = Matisse.obtainResult(data);
-        }
+
     }
+
+    private long oldTimeMillis = 0;
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
-            Toast.makeText(this, "你点击了退回", Toast.LENGTH_SHORT).show();
+
+            if (System.currentTimeMillis() - oldTimeMillis < 1000) {
+                finish();
+            } else {
+                Toast.makeText(this, "连续点击将退出", Toast.LENGTH_SHORT).show();
+                oldTimeMillis = System.currentTimeMillis();
+            }
+
             return true;
         }
         return super.onKeyDown(keyCode, event);

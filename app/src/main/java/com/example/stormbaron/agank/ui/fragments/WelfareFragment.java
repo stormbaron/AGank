@@ -162,7 +162,4 @@ public class WelfareFragment extends BaseFragment {
         mListener = null;
     }
 
-    public interface OnFragmentInteractionListener {
-
-    }
 }

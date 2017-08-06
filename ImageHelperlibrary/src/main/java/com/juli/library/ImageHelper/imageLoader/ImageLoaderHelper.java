@@ -7,7 +7,7 @@ import android.view.View;
  * 图片加载接口
  */
 
-public interface ImageLoader {
+public interface ImageLoaderHelper {
 
     void showImage(View view, String url, ImageLoaderOption option);
 

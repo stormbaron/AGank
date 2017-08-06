@@ -14,11 +14,10 @@ import retrofit2.http.Path;
  */
 
 public interface GankApiService {
-    @GET("data/Android/{page}/{number}")
-    Call<ResultMode<GankNewsEtity>> getList(@Path("page")int page, @Path("number") int number);
+    @GET("data/Android/{number}/{page}")
+    Call<ResultMode<GankNewsEtity>> getList(@Path("number") int page, @Path("page") int number);
 
 
     @GET("福利/count/{page}/page/{number}")
-    Call<ResultMode<ImageEntity>> getImageList(@Path("page")int page, @Path("number") int number);
-
+    Call<ResultMode<ImageEntity>> getImageList(@Path("page") int page, @Path("number") int number);
 }
