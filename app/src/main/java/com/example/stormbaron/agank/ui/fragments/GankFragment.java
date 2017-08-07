@@ -3,6 +3,7 @@ package com.example.stormbaron.agank.ui.fragments;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -40,17 +41,36 @@ public class GankFragment extends BaseFragment implements BaseView {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.id_gank_list);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            private Drawable mDivider;
             @Override
             public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
                 super.onDraw(c, parent, state);
-
+                //drawHorizontalLine(c, parent, state);
             }
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
                 super.getItemOffsets(outRect, view, parent, state);
-                outRect.set(4, 4, 4, 4);//设置itemView中内容相对边框左，上，右，下距离
+                outRect.set(2, 2, 2, 2);//设置itemView中内容相对边框左，上，右，下距离
             }
+
+           /* //画横线, 这里的parent其实是显示在屏幕显示的这部分
+            public void drawHorizontalLine(Canvas c, RecyclerView parent, RecyclerView.State state){
+                int left = parent.getPaddingLeft();
+                int right = parent.getWidth() - parent.getPaddingRight();
+                final int childCount = parent.getChildCount();
+                for (int i = 0; i < childCount; i++){
+                    final View child = parent.getChildAt(i);
+                    //获得child的布局信息
+                    final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams)child.getLayoutParams();
+                    final int top = child.getBottom() + params.bottomMargin;
+                    final int bottom = top + mDivider.getIntrinsicHeight();
+                    mDivider.setBounds(left, top, right, bottom);
+                    mDivider.draw(c);
+                }
+            }*/
         });
+
+
         gankPrensenter.requestData(getActivity(), mRecyclerView);
     }
 

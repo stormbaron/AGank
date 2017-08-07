@@ -14,6 +14,7 @@ import com.example.stormbaron.agank.model.api.apiservice.GankApiService;
 import com.example.stormbaron.agank.model.entity.GankNewsEtity;
 import com.example.stormbaron.agank.model.entity.ResultMode;
 import com.example.stormbaron.agank.ui.BaseView;
+import com.example.stormbaron.agank.ui.activity.WebViewActivity;
 import com.example.stormbaron.agank.ui.adapter.GankListAdapter;
 
 import java.io.IOException;
@@ -56,11 +57,13 @@ public class GankPrensenter implements BasePrensenter {
             mGankListAdapter = new GankListAdapter(mContext, mGanks, new GankListAdapter.ClickListener() {
                 @Override
                 public void onClick(int position) {
-                    Intent mIntent = new Intent();
+                    WebViewActivity.actionStart(mContext, mGanks.get(position).getUrl());
+                   /* Intent mIntent = new Intent();
                     Uri uri = Uri.parse(mGanks.get(position).getUrl());
                     mIntent.setAction(Intent.ACTION_VIEW);
                     mIntent.setData(uri);
-                    mContext.startActivity(mIntent);
+                    mContext.startActivity(mIntent);*/
+
                 }
             });
         }
