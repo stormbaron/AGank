@@ -6,6 +6,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/id_toolbar"
+        style="@style/toolbar"
+        android:titleTextColor="@color/icons"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize" />
+
     <FrameLayout
         android:id="@+id/id_main_content"
         android:layout_width="match_parent"
@@ -16,6 +23,7 @@
         android:id="@+id/id_main_tab_layout"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        app:tabTextColor="@color/secondary_text"
         app:tabIndicatorColor="@color/colorPrimary"
         app:tabSelectedTextColor="@color/colorPrimary" />
 </LinearLayout>

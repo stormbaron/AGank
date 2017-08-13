@@ -12,8 +12,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:src="@mipmap/ic_launcher" />
+        android:layout_marginRight="16dp"/>
 
     <RelativeLayout
         android:layout_width="wrap_content"

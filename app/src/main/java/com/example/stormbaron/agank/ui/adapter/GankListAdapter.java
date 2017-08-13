@@ -45,6 +45,7 @@ public class GankListAdapter extends RecyclerView.Adapter<GankListAdapter.ViewHo
         holder.date.setText(mDatas.get(position).getCreatedAt());
        if(mDatas.get(position).getImages()!=null){
            ImageLoaderManager.getInstance().load(mDatas.get(position).getImages().get(0).toString())
+                   .setPlaceHolder(R.mipmap.upload)
                    .setIsCrossFade(true)
                    .into(holder.mImg);
        }

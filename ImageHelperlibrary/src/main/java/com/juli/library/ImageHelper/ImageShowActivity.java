@@ -29,6 +29,7 @@ public class ImageShowActivity extends Activity {
     public void initView() {
         if (Url != null) {
             ImageLoaderManager.getInstance().load(Url)
+                    .setPlaceHolder(R.drawable.upload)
                     .into(mImageView);
         }
     }

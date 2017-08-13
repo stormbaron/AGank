@@ -20,4 +20,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+
+    <string name="title_share">分享</string>
 </resources>

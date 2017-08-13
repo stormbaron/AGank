@@ -37,7 +37,6 @@ public class GridAdapterRecyclerView extends RecyclerView.Adapter<GridAdapterRec
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         ImageLoaderManager.getInstance().load(mDatas.get(position).getUrl())
-                .setPlaceHolder(R.mipmap.ic_launcher)
                 .setIsCrossFade(true)
                 .setIsSkipMemoryCache(true)
                 .into(holder.mImg);
